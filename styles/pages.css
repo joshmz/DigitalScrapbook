@@ -1,0 +1,239 @@
+/* ─── PAGE FLIP INNER WRAPPER ────────────────── */
+
+.page-flip-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ─── PAGE LABEL ─────────────────────────────── */
+
+.page-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.45rem, 1vw, 0.75rem);
+  color: #f0e8d0;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ─── PAGE FLIP WRAPPER ──────────────────────── */
+
+.page-flip-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: auto;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.page-flip-wrapper.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.close-book-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10000;
+  transition: color 0.2s;
+  font-family: 'Press Start 2P', monospace;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-book-btn:hover {
+  color: #ccc;
+}
+
+/* ─── PAGE FLIP ──────────────────────────────── */
+
+#pageFlip {
+  width: min(90vw, 1500px);
+  aspect-ratio: 2072 / 1176;
+  image-rendering: pixelated;
+  position: relative;
+  z-index: 10001;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.page {
+  width: 50%;
+  height: 100%;
+  background: #ead4aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  image-rendering: pixelated;
+  font-family: 'Press Start 2P', monospace;
+  color: #333333;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.page:has(.page-img) {
+  background: none;
+}
+
+.page:nth-child(odd) {
+  border-right: 4px solid #3e27314b;
+}
+
+.page:has(.page-img):nth-child(odd) {
+  border-right: none;
+}
+
+/* ─── PAGE CONTENT ───────────────────────────── */
+
+.page-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 20px;
+  font-size: 0.7rem;
+}
+
+.page-content:has(.page-img) {
+  padding-top: 0;
+}
+
+/* ─── PAGE IMAGE ─────────────────────────────── */
+
+.page-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.page-img:hover {
+  transform: scale(1.02);
+}
+
+/* ─── PAGE BACKGROUND ────────────────────────── */
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 0;
+  cursor: default;
+}
+
+.page-bg:hover {
+  transform: none;
+}
+
+/* ─── PAGE ARROWS ────────────────────────────── */
+
+.page-arrow {
+  position: absolute;
+  bottom: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  font-size: 1.5rem;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 10002;
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1;
+}
+
+.page-arrow:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.page-arrow:active {
+  transform: scale(0.95);
+}
+
+.page-arrow-left  { left: 20px; }
+.page-arrow-right { right: 20px; }
+
+/* ─── ZOOM OVERLAY ───────────────────────────── */
+
+#zoomOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  justify-content: center;
+  z-index: 19999;
+  cursor: zoom-out;
+  animation: fadeIn 0.2s ease;
+}
+
+#zoomOverlay.active {
+  display: flex;
+}
+
+#zoomImg {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  /* box-shadow: 0 8px 60px rgba(0, 0, 0, 0.8); */
+  /* border: 3px solid #96886f; */
+  cursor: default;
+  animation: zoomIn 0.2s ease;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ─── RESPONSIVE SINGLE PAGE MODE ─────────────── */
+
+@media (max-width: 1024px) {
+  #pageFlip {
+    width: min(90vw, 1000px);
+    aspect-ratio: 1036 / 1176;
+  }
+
+  .page {
+    width: 100%;
+    height: 100%;
+  }
+
+  .page:nth-child(odd) {
+    border-right: none;
+  }
+}

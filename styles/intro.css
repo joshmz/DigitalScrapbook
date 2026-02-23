@@ -1,0 +1,121 @@
+/* ─── INTRO SCREEN ───────────────────────────── */
+
+#introScreen {
+  position: fixed;
+  inset: 0;
+  background: #44463f;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 60px;
+  z-index: 200;
+}
+
+/* ─── DIALOGUE BOX ───────────────────────────── */
+
+#dialogueBox {
+  width: min(700px, 90vw);
+  background: #0a0a0a;
+  border: 4px solid #f0c98a;
+  outline: 2px solid #7a4f2e;
+  box-shadow:
+    0 0 0 2px #000,
+    6px 6px 0 #7a4f2e;
+  padding: 28px 32px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+#dialogueBox::before,
+#dialogueBox::after {
+  content: '◆';
+  position: absolute;
+  color: #f0c98a;
+  font-size: 0.5rem;
+  font-family: 'Press Start 2P', monospace;
+}
+#dialogueBox::before { top: 6px;  left: 8px; }
+#dialogueBox::after  { top: 6px;  right: 8px; }
+
+#dialogueText {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #f0e8d0;
+  line-height: 2;
+  min-height: 5em;
+  position: relative;
+}
+
+#dialogueText::after {
+  content: '▍';
+  color: #f0c98a;
+  animation: blink 0.7s step-end infinite;
+  margin-left: 2px;
+}
+
+#dialogueText.done::after {
+  display: none;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── DIALOGUE BUTTONS ───────────────────────── */
+
+#dialogueButtons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+#skipBtn, #nextBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  border: 2px solid #7a4f2e;
+  cursor: pointer;
+  padding: 8px 16px;
+  letter-spacing: 1px;
+  transition: background 0.1s, transform 0.1s;
+}
+
+#skipBtn {
+  background: #1a1008;
+  color: #7a4f2e;
+}
+
+#skipBtn:hover {
+  background: #2b1a0e;
+  color: #d4956a;
+}
+
+#nextBtn {
+  background: #7a4f2e;
+  color: #f0c98a;
+  border-color: #f0c98a;
+}
+
+#nextBtn:hover { background: #9a6a3e; }
+#nextBtn:active, #skipBtn:active { transform: translate(1px, 1px); }
+
+/* ─── MAIN CONTENT ───────────────────────────── */
+
+#mainContent {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#mainContent.visible {
+  opacity: 1;
+  pointer-events: all;
+}

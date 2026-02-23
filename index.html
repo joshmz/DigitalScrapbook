@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Digital Scrapbook</title>
+  <!-- ─── GLOBAL STYLES ──────────────────────── -->
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/world.css" />
+  <link rel="stylesheet" href="styles/book.css" />
+  <link rel="stylesheet" href="styles/modal.css" />
+  <link rel="stylesheet" href="styles/intro.css" />
+  <link rel="stylesheet" href="styles/dialogue.css" />
+  <link rel="stylesheet" href="styles/pages.css" />
+  <!-- ─── PER-PAGE STYLES ─────────────────────── -->
+  <link rel="stylesheet" href="styles/page1.css" />
+  <link rel="stylesheet" href="styles/page2.css" />
+  <!-- Add more per-page stylesheets here as you build them -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ─── SOUND TOGGLE ───────────────────────────── -->
+  <button id="soundToggle" title="Mute">🔊</button>
+
+  <!-- ─── INTRO SCREEN ─────────────────────────── -->
+  <div id="introScreen">
+    <div id="dialogueBox">
+      <div id="dialogueText"></div>
+      <div id="dialogueButtons">
+        <button id="skipBtn">SKIP</button>
+        <button id="nextBtn">NEXT ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MAIN CONTENT (hidden until intro done) ── -->
+  <div id="mainContent">
+
+    <!-- Pixel clouds -->
+    <div class="clouds">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+      <div class="cloud cloud-4"></div>
+      <div class="cloud cloud-5"></div>
+      <div class="cloud cloud-6"></div>
+      <div class="cloud cloud-7"></div>
+      <div class="cloud cloud-8"></div>
+      <div class="cloud cloud-9"></div>
+      <div class="cloud cloud-10"></div>
+    </div>
+
+    <!-- Pixel grass canvas -->
+    <canvas id="grassCanvas"></canvas>
+
+    <!-- Audrey walk character -->
+    <canvas id="charCanvas"></canvas>
+
+    <!-- Book cover with clickable padlock zone -->
+    <div class="book-wrapper">
+      <img
+        class="book-cover"
+        src="images/ScrapCover.png"
+        alt="Audrey and Joshua Scrapbook"
+      />
+      <div class="padlock-hitbox" id="padlockBtn" title="Click to unlock"></div>
+    </div>
+
+    <!-- Page Flip Container (hidden until book is opened) -->
+    <div id="pageFlipContainer" class="page-flip-wrapper">
+      <button id="closeBookBtn" class="close-book-btn">✕</button>
+      <div class="page-flip-inner">
+        <div id="pageLabel" class="page-label"></div>
+        <!-- Pages are loaded dynamically from /pages/page1.html ... page10.html -->
+        <div id="pageFlip"></div>
+      </div>
+      <button id="prevPageBtn" class="page-arrow page-arrow-left">◀</button>
+      <button id="nextPageBtn" class="page-arrow page-arrow-right">▶</button>
+    </div>
+
+    <!-- ─── PAGE ZOOM OVERLAY ─────────────────────── -->
+    <div id="zoomOverlay">
+      <img id="zoomImg" src="" alt="Zoomed page" />
+    </div>
+
+    <!-- Lock modal -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <p class="modal-title">ENTER CODE</p>
+        <div class="dials">
+          <div class="dial-group">
+            <button class="dial-btn" data-dial="0" data-dir="up">▲</button>
+            <span class="dial-value" id="dial0">0</span>
+            <button class="dial-btn" data-dial="0" data-dir="down">▼</button>
+          </div>
+          <span class="dial-sep">/</span>
+          <div class="dial-group">
+            <button class="dial-btn" data-dial="1" data-dir="up">▲</button>
+            <span class="dial-value" id="dial1">0</span>
+            <button class="dial-btn" data-dial="1" data-dir="down">▼</button>
+          </div>
+          <span class="dial-sep">/</span>
+          <div class="dial-group">
+            <button class="dial-btn" data-dial="2" data-dir="up">▲</button>
+            <span class="dial-value" id="dial2">0</span>
+            <button class="dial-btn" data-dial="2" data-dir="down">▼</button>
+          </div>
+        </div>
+        <p class="dial-hint">Scroll or click arrows to change <br><br>HINT: Our First Date...</p>
+        <button class="open-btn" id="openBtn">OPEN</button>
+        <p class="error-msg" id="errorMsg"></p>
+        <button class="close-btn" id="closeBtn">✕</button>
+      </div>
+    </div>
+
+  </div><!-- /mainContent -->
+
+  <script src="script.js"></script>
+</body>
+</html>

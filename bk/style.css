@@ -1,0 +1,589 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #8fb7da;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ─── CHARACTER CANVAS ───────────────────────── */
+
+#charCanvas {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: all;
+  cursor: default;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ─── GRASS CANVAS ───────────────────────────── */
+
+#grassCanvas {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* ─── CLOUDS ─────────────────────────────────── */
+
+.clouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cloud {
+  position: absolute;
+  background: #ffffff;
+  image-rendering: pixelated;
+}
+
+.cloud-1 {
+  top: 6%;  left: -220px; width: 80px; height: 24px;
+  box-shadow: 16px -16px 0 #fff, 40px -24px 0 #fff, 64px -16px 0 #fff,
+    80px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5,
+    48px 8px 0 #cde4f5, 64px 8px 0 #cde4f5, 80px 8px 0 #cde4f5;
+  animation: drift 28s linear infinite;
+}
+.cloud-2 {
+  top: 18%; left: -160px; width: 56px; height: 20px;
+  box-shadow: 12px -12px 0 #fff, 32px -20px 0 #fff, 52px -12px 0 #fff,
+    56px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5, 48px 8px 0 #cde4f5;
+  animation: drift 40s linear infinite;
+  animation-delay: -12s;
+}
+.cloud-3 {
+  top: 5%;  left: -300px; width: 96px; height: 24px;
+  box-shadow: 16px -16px 0 #fff, 48px -24px 0 #fff, 72px -16px 0 #fff,
+    96px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5,
+    48px 8px 0 #cde4f5, 64px 8px 0 #cde4f5, 80px 8px 0 #cde4f5, 96px 8px 0 #cde4f5;
+  animation: drift 52s linear infinite;
+  animation-delay: -30s;
+}
+.cloud-4 {
+  top: 28%; left: -180px; width: 64px; height: 20px;
+  box-shadow: 16px -16px 0 #fff, 40px -20px 0 #fff, 60px -12px 0 #fff,
+    64px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5,
+    48px 8px 0 #cde4f5, 64px 8px 0 #cde4f5;
+  animation: drift 35s linear infinite;
+  animation-delay: -5s;
+}
+.cloud-5 {
+  top: 12%; left: -250px; width: 112px; height: 28px;
+  box-shadow: 24px -16px 0 #fff, 56px -28px 0 #fff, 88px -16px 0 #fff,
+    112px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5,
+    48px 8px 0 #cde4f5, 64px 8px 0 #cde4f5, 80px 8px 0 #cde4f5,
+    96px 8px 0 #cde4f5, 112px 8px 0 #cde4f5;
+  animation: drift 45s linear infinite;
+  animation-delay: -20s;
+}
+.cloud-6 {
+  top: 35%; left: -130px; width: 48px; height: 16px;
+  box-shadow: 8px -12px 0 #fff, 28px -16px 0 #fff, 44px -10px 0 #fff,
+    48px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5, 48px 8px 0 #cde4f5;
+  animation: drift 25s linear infinite;
+  animation-delay: -8s;
+}
+.cloud-7 {
+  top: 2%;  left: -200px; width: 72px; height: 24px;
+  box-shadow: 16px -20px 0 #fff, 40px -28px 0 #fff, 64px -20px 0 #fff,
+    72px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5,
+    48px 8px 0 #cde4f5, 64px 8px 0 #cde4f5, 72px 8px 0 #cde4f5;
+  animation: drift 60s linear infinite;
+  animation-delay: -45s;
+}
+.cloud-8 {
+  top: 42%; left: -100px; width: 40px; height: 16px;
+  box-shadow: 8px -8px 0 #fff, 24px -16px 0 #fff, 36px -8px 0 #fff,
+    40px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5;
+  animation: drift 22s linear infinite;
+  animation-delay: -15s;
+}
+.cloud-9 {
+  top: 22%; left: -350px; width: 128px; height: 32px;
+  box-shadow: 24px -20px 0 #fff, 64px -32px 0 #fff, 100px -20px 0 #fff,
+    128px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5,
+    48px 8px 0 #cde4f5, 64px 8px 0 #cde4f5, 80px 8px 0 #cde4f5,
+    96px 8px 0 #cde4f5, 112px 8px 0 #cde4f5, 128px 8px 0 #cde4f5;
+  animation: drift 55s linear infinite;
+  animation-delay: -38s;
+}
+.cloud-10 {
+  top: 48%; left: -140px; width: 56px; height: 16px;
+  box-shadow: 12px -12px 0 #fff, 32px -16px 0 #fff, 48px -8px 0 #fff,
+    56px 0 0 #fff, -8px 0 0 #fff,
+    0px 8px 0 #cde4f5, 16px 8px 0 #cde4f5, 32px 8px 0 #cde4f5, 48px 8px 0 #cde4f5;
+  animation: drift 32s linear infinite;
+  animation-delay: -2s;
+}
+
+@keyframes drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(100vw + 500px)); }
+}
+
+/* ─── BOOK ───────────────────────────────────── */
+
+.book-wrapper {
+  position: relative;
+  width: min(80vh);
+  animation: float 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 24px 40px rgba(0,0,0,0.7));
+  transition: filter 0.3s ease;
+  z-index: 1;
+}
+
+.book-wrapper:hover {
+  filter: drop-shadow(0 28px 48px rgba(0,0,0,0.85)) drop-shadow(0 0 20px rgba(200,140,80,0.2));
+}
+
+.book-cover {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.padlock-hitbox {
+  position: absolute;
+  top: 42%;
+  right: 12%;
+  width: 15%;
+  height: 20%;
+  cursor: pointer;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* ─── MODAL OVERLAY ──────────────────────────── */
+/* Colour palette pulled from the padlock sprite:
+   steel blue-grey body  → #7a8fa6
+   dark shadow steel     → #4a5f72
+   mid steel             → #5c7388
+   light highlight steel → #a8bfcf
+   shackle tan/brown     → #c4a96a
+   dark body base        → #2a3a47
+*/
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: #2a3a47;
+  border: 4px solid #7a8fa6;
+  outline: 2px solid #4a5f72;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  image-rendering: pixelated;
+  box-shadow:
+    4px 4px 0 #4a5f72,
+    8px 8px 0 #2a3a47;
+}
+
+.modal-title {
+  font-family: 'Press Start 2P', monospace;
+  color: #a8bfcf;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+}
+
+/* ─── DIALS ──────────────────────────────────── */
+
+.dials {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dial-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.dial-btn {
+  background: #1e2d38;
+  border: 2px solid #5c7388;
+  color: #a8bfcf;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  width: 36px;
+  height: 28px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dial-btn:hover  { background: #3a4f60; }
+.dial-btn:active { background: #5c7388; }
+
+.dial-value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.1rem;
+  color: #8b9bb4;
+  background: #1a2530;
+  border: 2px solid #5a6988;
+  width: 52px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+}
+
+.dial-sep {
+  font-family: 'Press Start 2P', monospace;
+  color: #5a6988;
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+/* ─── HINT ───────────────────────────────────── */
+
+.dial-hint {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.4rem;
+  color: #5c7388;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 2;
+}
+
+/* ─── OPEN BUTTON ────────────────────────────── */
+
+.open-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.65rem;
+  background: #5c7388;
+  color: #e8f0f5;
+  border: 2px solid #a8bfcf;
+  padding: 12px 28px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.open-btn:hover  { background: #7a8fa6; }
+.open-btn:active { transform: translate(2px, 2px); }
+
+/* ─── ERROR MESSAGE ──────────────────────────── */
+
+.error-msg {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.45rem;
+  color: #c0392b;
+  letter-spacing: 1px;
+  min-height: 1em;
+}
+
+/* ─── CLOSE BUTTON ───────────────────────────── */
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #5c7388;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.close-btn:hover { color: #a8bfcf; }
+
+/* ─── SHAKE ANIMATION ────────────────────────── */
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-6px); }
+  40%  { transform: translateX(6px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+/* ─── INTRO SCREEN ───────────────────────────── */
+
+#introScreen {
+  position: fixed;
+  inset: 0;
+  background: #644850;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 60px;
+  z-index: 200;
+}
+
+/* ─── DIALOGUE BOX ───────────────────────────── */
+
+#dialogueBox {
+  width: min(700px, 90vw);
+  background: #0a0a0a;
+  border: 4px solid #f0c98a;
+  outline: 2px solid #7a4f2e;
+  box-shadow:
+    0 0 0 2px #000,
+    6px 6px 0 #7a4f2e;
+  padding: 28px 32px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+#dialogueBox::before,
+#dialogueBox::after {
+  content: '◆';
+  position: absolute;
+  color: #f0c98a;
+  font-size: 0.5rem;
+  font-family: 'Press Start 2P', monospace;
+}
+#dialogueBox::before { top: 6px;  left: 8px; }
+#dialogueBox::after  { top: 6px;  right: 8px; }
+
+#dialogueText {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #f0e8d0;
+  line-height: 2;
+  min-height: 5em;
+  position: relative;
+}
+
+#dialogueText::after {
+  content: '▍';
+  color: #f0c98a;
+  animation: blink 0.7s step-end infinite;
+  margin-left: 2px;
+}
+
+#dialogueText.done::after {
+  display: none;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── DIALOGUE BUTTONS ───────────────────────── */
+
+#dialogueButtons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+#skipBtn, #nextBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  border: 2px solid #7a4f2e;
+  cursor: pointer;
+  padding: 8px 16px;
+  letter-spacing: 1px;
+  transition: background 0.1s, transform 0.1s;
+}
+
+#skipBtn {
+  background: #1a1008;
+  color: #7a4f2e;
+}
+
+#skipBtn:hover {
+  background: #2b1a0e;
+  color: #d4956a;
+}
+
+#nextBtn {
+  background: #7a4f2e;
+  color: #f0c98a;
+  border-color: #f0c98a;
+}
+
+#nextBtn:hover { background: #9a6a3e; }
+#nextBtn:active, #skipBtn:active { transform: translate(1px, 1px); }
+
+/* ─── MAIN CONTENT ───────────────────────────── */
+
+#mainContent {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#mainContent.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── CHARACTER DIALOGUE OVERLAY ─────────────────── */
+
+#charDialogueOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 60px;
+  z-index: 150;
+}
+
+#charDialogueOverlay.active {
+  display: flex;
+}
+
+#charDialogueBox {
+  width: min(700px, 90vw);
+  background: #0a0a0a;
+  border: 4px solid #f0c98a;
+  outline: 2px solid #7a4f2e;
+  box-shadow:
+    0 0 0 2px #000,
+    6px 6px 0 #7a4f2e;
+  padding: 28px 32px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+#charDialogueBox::before,
+#charDialogueBox::after {
+  content: '◆';
+  position: absolute;
+  color: #f0c98a;
+  font-size: 0.5rem;
+  font-family: 'Press Start 2P', monospace;
+}
+#charDialogueBox::before { top: 6px; left: 8px; }
+#charDialogueBox::after  { top: 6px; right: 8px; }
+
+#charDialogueText {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #f0e8d0;
+  line-height: 2;
+  min-height: 3em;
+}
+
+#charDialogueText::after {
+  content: '▍';
+  color: #f0c98a;
+  animation: blink 0.7s step-end infinite;
+  margin-left: 2px;
+}
+
+#charDialogueText.done::after {
+  display: none;
+}
+
+#charDialogueButtons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#charNextBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  border: 2px solid #f0c98a;
+  background: #7a4f2e;
+  color: #f0c98a;
+  cursor: pointer;
+  padding: 8px 16px;
+  letter-spacing: 1px;
+  transition: background 0.1s, transform 0.1s;
+}
+
+#charNextBtn:hover  { background: #9a6a3e; }
+#charNextBtn:active { transform: translate(1px, 1px); }
+
+#soundToggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 300;
+  background: #2a3a47;
+  border: 3px solid #7a8fa6;
+  color: #fff;
+  font-size: 1.2rem;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  image-rendering: pixelated;
+  box-shadow: 3px 3px 0 #4a5f72;
+}
+
+#soundToggle:hover {
+  background: #3a4f60;
+}
+
+#soundToggle:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
