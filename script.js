@@ -329,7 +329,7 @@ showLine(0);
 // ─── PADLOCK / DIAL LOGIC ─────────────────────────────────────────
 
 const CORRECT = [31, 5, 25];
-const MAX     = [31, 31, 31];
+const MAX     = [31, 12, 26];
 const values  = [0, 0, 0];
 
 const padlockBtn   = document.getElementById('padlockBtn');

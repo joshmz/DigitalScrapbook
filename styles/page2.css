@@ -55,16 +55,8 @@
   left: 9%;
   width: 33cqw;
   rotate: -5deg;
-  background: #dfdfdf;
-  /* border: none; */
-  padding: 3cqw 3cqw 9cqw 3cqw;
-  box-shadow:
-    0 2px 4px rgba(0,0,0,0.15),
-    0 6px 20px rgba(0,0,0,0.12);
 }
-.p2-photo1 .scrap-photo {
-  border: 2px solid rgba(0, 0, 0, 0.603);
-}
+
 .p2-text1 {
   top: 18%;
   right: 17%;
@@ -72,9 +64,9 @@
   font-size: 2cqw;
 }
 .p2-photo2 {
-  top: 50%;
-  left: 10%;
-  width: 38cqw;
+  top: 46%;
+  left: 8%;
+  width: 40cqw;
   rotate: 3deg;
 }
 .p2-text2 {
