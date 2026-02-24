@@ -47,21 +47,23 @@
   font-family: 'Press Start 2P', monospace;
   color: #3e2710;
   line-height: 2;
+  /* font-size: 2cqw; */
 }
 
 /* ─── PAGE SPECIFIC POSITIONS ──────────────── */
 .p4-photo1 {
-  top: 8%;
+  top: 10%;
   left: 9%;
-  width: 45cqw;
-  rotate: -5deg;
+  width: 40cqw;
+  /* rotate: -5deg; */
 }
 
-.p4-text1 {
-  top: 20%;
+.scrap-text.p4-text1 {
+  top: 16%;
   right: 18%;
-  width: 25cqw;
-  rotate: -5deg;
+  width: 32cqw;
+  font-size: 1.8cqw;
+  /* rotate: -5deg; */
 }
 
 .p4-photo2 {
@@ -72,10 +74,11 @@
 }
 
 .p4-text2 {
-  top: 60%;
+  top: 55%;
   left: 11%;
-  width: 32cqw;
-  rotate: -2deg;
+  width: 33cqw;
+  /* rotate: -2deg; */
+  font-size: 1.8cqw;
 }
 
 .vs {
