@@ -79,9 +79,9 @@
 .scrap-text.p3-text2 {
   top: 86%;
   left: 58%;
-  width: 30cqw;
   font-size: 2.5cqw;
   rotate: 2deg;
+  white-space: nowrap;
 }
 
 .sleep{
