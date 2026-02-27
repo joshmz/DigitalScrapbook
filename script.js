@@ -18,6 +18,9 @@ pageTurnSound.volume = 1;
 const bookCloseSound = new Audio('SFX/BookClose.mp3');
 bookCloseSound.volume = 1;
 
+const quackSound = new Audio('SFX/quack.mp3');
+quackSound.volume = 0.8;
+
 const bgm = new Audio('SFX/BGM.mp3');
 bgm.loop   = true;
 bgm.volume = 0.4;
@@ -31,6 +34,19 @@ soundToggle.addEventListener('click', () => {
   bgm.muted               = !soundOn;
   soundToggle.textContent = soundOn ? '🔊' : '🔇';
   soundToggle.title       = soundOn ? 'Mute' : 'Unmute';
+});
+
+// ─── BOOK TOGGLE ─────────────────────────────────────────────────
+
+const bookToggle = document.getElementById('bookToggle');
+let bookVisible = true;
+
+bookToggle.addEventListener('click', () => {
+  const bookWrapper = document.querySelector('.book-wrapper');
+  bookVisible = !bookVisible;
+  bookWrapper.style.display = bookVisible ? 'block' : 'none';
+  bookToggle.textContent = bookVisible ? '📖' : '📕';
+  bookToggle.title       = bookVisible ? 'Hide Book' : 'Show Book';
 });
 
 function playTypeSound() {
@@ -164,7 +180,10 @@ async function showPageFlip() {
   bookWrapper.style.visibility = 'hidden';
   bookWrapper.style.pointerEvents = 'none';
   bookWrapper.style.zIndex = '-1';
-  
+
+  // Hide toggle while book is open
+  bookToggle.style.display = 'none';
+
   // Show page flip container
   container.classList.add('active');
 }
@@ -179,11 +198,16 @@ function closePageFlip() {
   // Remove active class to hide
   container.classList.remove('active');
   
-  // Show book cover again with proper z-index
-  bookWrapper.style.display = 'block';
-  bookWrapper.style.visibility = 'visible';
-  bookWrapper.style.pointerEvents = 'auto';
-  bookWrapper.style.zIndex = '10';
+  // Show book cover again (only if it was visible before)
+  if (bookVisible) {
+    bookWrapper.style.display = 'block';
+    bookWrapper.style.visibility = 'visible';
+    bookWrapper.style.pointerEvents = 'auto';
+    bookWrapper.style.zIndex = '10';
+  }
+
+  // Show toggle again
+  bookToggle.style.display = 'flex';
 }
 
 // Close book button
@@ -505,6 +529,42 @@ const JOSH_FRAME_COUNT = 6;
 const JOSH_FRAME_W = 41;
 const JOSH_FRAME_H = 100;
 
+// ─── DUCK ─────────────────────────────────────────────────────────
+const DUCK_SHEET_SRC   = 'images/characters/duck_spritesheet.png';
+const DUCK_FRAME_COUNT = 13;
+const DUCK_FRAME_W     = 32;
+const DUCK_FRAME_H     = 32;
+
+let duckSheet = null;
+
+let duck = {
+  x: 0,
+  facingLeft: false,
+  speed: 1.8,
+  scale: 2.5,
+  frame: 0,
+  frameTimer: 0,
+  frameRate: 60,
+};
+
+let duck2 = {
+  x: 0,
+  facingLeft: false,
+  frame: 0,
+  frameTimer: 0,
+  frameRate: 65,
+  scale: 1.9,
+};
+
+let duck3 = {
+  x: 0,
+  facingLeft: false,
+  frame: 0,
+  frameTimer: 0,
+  frameRate: 70,
+  scale: 1.9,
+};
+
 let charCanvas, charCtx;
 let audreySheet = null;
 let joshSheet   = null;
@@ -545,9 +605,13 @@ function initCharacters() {
   joshSheet = new Image();
   joshSheet.src = JOSH_SHEET_SRC;
 
+  duckSheet = new Image();
+  duckSheet.src = DUCK_SHEET_SRC;
+
   // Start Audrey left of centre, Josh right of centre, walking toward each other
   audrey.x = window.innerWidth * 0.2;
   josh.x   = window.innerWidth * 0.7;
+  duck.x   = window.innerWidth * 0.5;
 
   // Click detection & hover cursor
   charCanvas.addEventListener('click', handleCharClick);
@@ -571,10 +635,12 @@ function updateCharacters(timestamp) {
 
   // Move Audrey
   audrey.x += audrey.facingLeft ? -audrey.speed : audrey.speed;
-  if (!audrey.facingLeft && audrey.x + charW * 2 >= window.innerWidth - 8) {
+  if (!audrey.facingLeft && audrey.x + charW >= window.innerWidth - 8) {
     audrey.facingLeft = true;
+    audrey.x = window.innerWidth - 8 - charW;
   } else if (audrey.facingLeft && audrey.x <= 8) {
     audrey.facingLeft = false;
+    audrey.x = 8;
   }
   if (timestamp - audrey.frameTimer > audrey.frameRate) {
     audrey.frame      = (audrey.frame + 1) % AUDREY_FRAME_COUNT;
@@ -583,14 +649,58 @@ function updateCharacters(timestamp) {
 
   // Move Josh
   josh.x += josh.facingLeft ? -josh.speed : josh.speed;
-  if (!josh.facingLeft && josh.x + charW * 2 >= window.innerWidth - 8) {
+  if (!josh.facingLeft && josh.x + charW >= window.innerWidth - 8) {
     josh.facingLeft = true;
+    josh.x = window.innerWidth - 8 - charW;
   } else if (josh.facingLeft && josh.x <= 8) {
     josh.facingLeft = false;
+    josh.x = 8;
   }
   if (timestamp - josh.frameTimer > josh.frameRate) {
     josh.frame      = (josh.frame + 1) % JOSH_FRAME_COUNT;
     josh.frameTimer = timestamp;
+  }
+
+  // Move Duck — follow right behind Audrey
+  const duckW = DUCK_FRAME_W * duck.scale;
+  const followOffset = 30;
+  duck.facingLeft = audrey.facingLeft;
+  if (audrey.facingLeft) {
+    duck.x = audrey.x + charW + followOffset;
+  } else {
+    duck.x = audrey.x - duckW - followOffset;
+  }
+  if (timestamp - duck.frameTimer > duck.frameRate) {
+    duck.frame      = (duck.frame + 1) % DUCK_FRAME_COUNT;
+    duck.frameTimer = timestamp;
+  }
+
+  // Move Duck2 — follow behind Duck1
+  const duck2W = DUCK_FRAME_W * duck2.scale;
+  const gap2 = -10;
+  duck2.facingLeft = audrey.facingLeft;
+  if (audrey.facingLeft) {
+    duck2.x = duck.x + duckW + gap2;
+  } else {
+    duck2.x = duck.x - duck2W - gap2;
+  }
+  if (timestamp - duck2.frameTimer > duck2.frameRate) {
+    duck2.frame      = (duck2.frame + 1) % DUCK_FRAME_COUNT;
+    duck2.frameTimer = timestamp;
+  }
+
+  // Move Duck3 — follow behind Duck2
+  const duck3W = DUCK_FRAME_W * duck3.scale;
+  const gap3 = -10;
+  duck3.facingLeft = audrey.facingLeft;
+  if (audrey.facingLeft) {
+    duck3.x = duck2.x + duck2W + gap3;
+  } else {
+    duck3.x = duck2.x - duck3W - gap3;
+  }
+  if (timestamp - duck3.frameTimer > duck3.frameRate) {
+    duck3.frame      = (duck3.frame + 1) % DUCK_FRAME_COUNT;
+    duck3.frameTimer = timestamp;
   }
 }
 
@@ -711,6 +821,29 @@ function handleCharClick(e) {
 
   if (hitAudrey) openCharDialogue(AUDREY_LINES);
   else if (hitJosh) openCharDialogue(JOSH_LINES);
+
+  // Duck hit detection
+  const ddw     = DUCK_FRAME_W * duck.scale;
+  const ddh     = DUCK_FRAME_H * duck.scale;
+  const groundY2 = window.innerHeight - 120 + (120 - 16);
+  const dDrawY  = groundY2 - ddh + 20;
+  const d2w = DUCK_FRAME_W * duck2.scale;
+  const d2h = DUCK_FRAME_H * duck2.scale;
+  const d2DrawY = groundY2 - d2h + 20;
+  const d3w = DUCK_FRAME_W * duck3.scale;
+  const d3h = DUCK_FRAME_H * duck3.scale;
+  const d3DrawY = groundY2 - d3h + 20;
+
+  const hitDuck  = mx >= duck.x  - 10 && mx <= duck.x  + ddw + 10 && my >= dDrawY  - 10 && my <= dDrawY  + ddh + 10;
+  const hitDuck2 = mx >= duck2.x - 10 && mx <= duck2.x + d2w + 10 && my >= d2DrawY - 10 && my <= d2DrawY + d2h + 10;
+  const hitDuck3 = mx >= duck3.x - 10 && mx <= duck3.x + d3w + 10 && my >= d3DrawY - 10 && my <= d3DrawY + d3h + 10;
+
+  if (hitDuck || hitDuck2 || hitDuck3) {
+    if (soundOn) {
+      quackSound.currentTime = 0;
+      quackSound.play().catch(() => {});
+    }
+  }
 }
 
 function updateCursor(e) {
@@ -723,7 +856,22 @@ function updateCursor(e) {
   const { dw, dh, drawY } = getCharHitInfo();
 
   const hitAny = (mx >= audrey.x - 10 && mx <= audrey.x + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10)
-              || (mx >= josh.x   - 10 && mx <= josh.x   + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10);
+              || (mx >= josh.x   - 10 && mx <= josh.x   + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10)
+              || (() => {
+                   const ddw2 = DUCK_FRAME_W * duck.scale;
+                   const ddh2 = DUCK_FRAME_H * duck.scale;
+                   const gy   = window.innerHeight - 120 + (120 - 16);
+                   const dy   = gy - ddh2 + 20;
+                   const d2w2 = DUCK_FRAME_W * duck2.scale;
+                   const d2h2 = DUCK_FRAME_H * duck2.scale;
+                   const d2y  = gy - d2h2 + 20;
+                   const d3w2 = DUCK_FRAME_W * duck3.scale;
+                   const d3h2 = DUCK_FRAME_H * duck3.scale;
+                   const d3y  = gy - d3h2 + 20;
+                   return (mx >= duck.x  - 10 && mx <= duck.x  + ddw2 + 10 && my >= dy  - 10 && my <= dy  + ddh2 + 10)
+                       || (mx >= duck2.x - 10 && mx <= duck2.x + d2w2 + 10 && my >= d2y - 10 && my <= d2y + d2h2 + 10)
+                       || (mx >= duck3.x - 10 && mx <= duck3.x + d3w2 + 10 && my >= d3y - 10 && my <= d3y + d3h2 + 10);
+                 })();
   charCanvas.style.cursor = hitAny ? 'pointer' : 'default';
 }
 
@@ -794,6 +942,26 @@ function drawCharacters() {
     }
     charCtx.restore();
     drawNametag(Math.round(josh.x + jdw / 2), Math.round(jDrawY), 'kimjongtoes');
+  }
+
+  // ── Draw Ducks ──
+  if (duckSheet && duckSheet.complete && duckSheet.naturalWidth > 0) {
+    const ducks = [duck, duck2, duck3];
+    for (const d of ducks) {
+      const ddw    = DUCK_FRAME_W * d.scale;
+      const ddh    = DUCK_FRAME_H * d.scale;
+      const dDrawY = groundY - ddh + 20;
+      charCtx.save();
+      charCtx.imageSmoothingEnabled = false;
+      if (d.facingLeft) {
+        charCtx.translate(Math.round(d.x) + ddw, 0);
+        charCtx.scale(-1, 1);
+        charCtx.drawImage(duckSheet, d.frame * DUCK_FRAME_W, 0, DUCK_FRAME_W, DUCK_FRAME_H, 0, Math.round(dDrawY), ddw, ddh);
+      } else {
+        charCtx.drawImage(duckSheet, d.frame * DUCK_FRAME_W, 0, DUCK_FRAME_W, DUCK_FRAME_H, Math.round(d.x), Math.round(dDrawY), ddw, ddh);
+      }
+      charCtx.restore();
+    }
   }
 }
 

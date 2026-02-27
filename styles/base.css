@@ -10,6 +10,10 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: #8fb7da;
+  background-image: url('../images/bgimg.png');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;

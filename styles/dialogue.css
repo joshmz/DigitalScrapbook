@@ -110,3 +110,34 @@
   transform: translate(2px, 2px);
   box-shadow: none;
 }
+
+/* ─── BOOK TOGGLE ────────────────────────────── */
+
+#bookToggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 300;
+  background: #2a3a47;
+  border: 3px solid #7a8fa6;
+  color: #fff;
+  font-size: 1.2rem;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  image-rendering: pixelated;
+  box-shadow: 3px 3px 0 #4a5f72;
+}
+
+#bookToggle:hover {
+  background: #3a4f60;
+}
+
+#bookToggle:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
