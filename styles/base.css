@@ -9,13 +9,18 @@
 body {
   width: 100vw;
   height: 100vh;
-  background-color: #8fb7da;
-  background-image: url('../images/bgimg.png');
-  background-size: cover;
-  background-position: center bottom;
-  background-repeat: no-repeat;
+  background-color: #44463f;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+/* Restore original background once intro is complete */
+body.intro-done {
+  background-color: #8fb7da;
+  background-image: url('images/bgimg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

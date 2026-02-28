@@ -27,6 +27,12 @@ quackSound.volume = 0.8;
 const bmoSound = new Audio('SFX/bmo.mp3');
 bmoSound.volume = 0.8;
 
+const introVoices = [1,2,3,4,5,6,7].map(n => {
+  const a = new Audio(`SFX/intro/bmo${n}.mp3`);
+  a.volume = 1.0;
+  return a;
+});
+
 const bgm = new Audio('SFX/BGM.mp3');
 bgm.loop   = true;
 bgm.volume = 0.4;
@@ -40,14 +46,12 @@ let bookVisible = true;
 
 bookToggle.addEventListener('click', () => {
   const bookWrapper = document.querySelector('.book-wrapper');
-  // If book is open, act as close button
   if (document.getElementById('pageFlipContainer').classList.contains('active')) {
     closePageFlip();
     return;
   }
   bookVisible = !bookVisible;
   bookWrapper.style.opacity = bookVisible ? '1' : '0';
-  // Delay pointer-events so book can't be clicked mid-fade
   if (bookVisible) {
     bookWrapper.style.pointerEvents = 'auto';
   } else {
@@ -124,17 +128,16 @@ async function loadPages() {
 
 let pageFlipInitialized = false;
 let bookUnlocked = false;
-let currentPageIndex = 0; // Track current page for simple page turning
+let currentPageIndex = 0;
 
 function isSinglePageMode() {
   return window.innerWidth <= 1024;
 }
 
 function initializePageFlip() {
-  // Simple initialization - just reset page to 0
   currentPageIndex = 0;
   updatePageDisplay();
-  pageFlipInitialized = true; // Mark as initialized
+  pageFlipInitialized = true;
 }
 
 function updatePageLabel() {
@@ -151,16 +154,12 @@ function updatePageLabel() {
 }
 
 function updatePageDisplay() {
-  // Hide all pages first
   const pages = document.querySelectorAll('.page');
-  pages.forEach((page, index) => {
-    page.style.display = 'none';
-  });
+  pages.forEach((page) => { page.style.display = 'none'; });
   
   const singlePageMode = isSinglePageMode();
   const pagesPerSpread = singlePageMode ? 1 : 2;
   
-  // Show current spread
   const pageCount = pages.length;
   for (let i = 0; i < pagesPerSpread; i++) {
     if (currentPageIndex + i < pageCount) {
@@ -182,33 +181,26 @@ async function showPageFlip() {
   const container = document.getElementById('pageFlipContainer');
   const bookWrapper = document.querySelector('.book-wrapper');
 
-  // Load pages from individual files if not already done
   await loadPages();
 
-  // Initialize page flip if not already done
   if (!pageFlipInitialized) {
     initializePageFlip();
   }
   
-  // Hide book cover completely
   bookWrapper.style.display = 'none';
   bookWrapper.style.visibility = 'hidden';
   bookWrapper.style.pointerEvents = 'none';
   bookWrapper.style.zIndex = '-1';
 
-  // Stop charCanvas intercepting clicks while book is open
   const cc = document.getElementById('charCanvas');
   if (cc) cc.style.pointerEvents = 'none';
 
-  // Repurpose book toggle as a close button
   bookToggle.textContent = '✕';
   bookToggle.title = 'Close Book';
 
-  // Hide replay button while book is open
   const replayBtn = document.getElementById('replayBtn');
   if (replayBtn) replayBtn.style.display = 'none';
 
-  // Show page flip container
   container.classList.add('active');
 }
 
@@ -216,38 +208,30 @@ function closePageFlip() {
   const container = document.getElementById('pageFlipContainer');
   const bookWrapper = document.querySelector('.book-wrapper');
   
-  // Play close sound
   playBookCloseSound();
   
-  // Remove active class to hide
   container.classList.remove('active');
   
-  // Show book cover again with proper z-index
   bookWrapper.style.display = 'block';
   bookWrapper.style.visibility = 'visible';
   bookWrapper.style.pointerEvents = 'auto';
   bookWrapper.style.zIndex = '10';
 
-  // Restore charCanvas pointer events
   const cc = document.getElementById('charCanvas');
   if (cc) cc.style.pointerEvents = 'all';
 
-  // Restore book toggle
   bookToggle.textContent = bookVisible ? '👁️' : '🏔️';
   bookToggle.title = bookVisible ? 'Hide Book' : 'Show Book';
 
-  // Restore replay button
   const rb = document.getElementById('replayBtn');
   if (rb) rb.style.display = 'flex';
 }
 
-// Close book button
 const closeBookBtn = document.getElementById('closeBookBtn');
 if (closeBookBtn) {
   closeBookBtn.addEventListener('click', closePageFlip);
 }
 
-// Page flip arrows
 const prevPageBtn = document.getElementById('prevPageBtn');
 const nextPageBtn = document.getElementById('nextPageBtn');
 const pageFlipElement = document.getElementById('pageFlip');
@@ -256,14 +240,12 @@ if (prevPageBtn) {
   prevPageBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (currentPageIndex === 0) {
-      // Close the book when on first page
       closePageFlip();
     } else if (currentPageIndex > 0) {
       const pageIncrement = isSinglePageMode() ? 1 : 2;
       currentPageIndex -= pageIncrement;
       updatePageDisplay();
       playPageTurnSound();
-      console.log('Previous page clicked');
     }
   });
 }
@@ -277,12 +259,10 @@ if (nextPageBtn) {
       currentPageIndex += pageIncrement;
       updatePageDisplay();
       playPageTurnSound();
-      console.log('Next page clicked');
     }
   });
 }
 
-// Handle window resize to adapt between single and double page mode
 window.addEventListener('resize', () => {
   if (pageFlipInitialized) {
     updatePageDisplay();
@@ -292,15 +272,13 @@ window.addEventListener('resize', () => {
 // ─── DIALOGUE INTRO ───────────────────────────────────────────────
 
 const LINES = [
-  "Hi Audrey! It's Josh",
-  "I wanted to make something to celebrate the time we have spent together",
-  "You'll be able to see ALLLL our good times, bad times, loving times and even the embarrassing times",
-  "I know you really like things that are personalised and takes time and effort to make, so I made this!",
-  "Just so you know, everything was handmade (Excluding the music and sounds cos idk how to do that...)",
-  "BUT I MADE ALL THE ARTWORK!!!",
-  "Anyway, I thought a website would be cool cos this way, you can always carry a little part of our relationship wherever you are in the world",
-  "And you don't even need to carry a big ahh clunky book!",
-  "And so, without further ado, press 'open' to see what I've been working on..."
+  "Hey Audrey, It's BMO! Josh made you a really cool thing to celebrate the time you have spent together.",
+  "You'll be able to see ALL of your good times, bad times, loving times and even the embarrassing times together",
+  "Josh knows you really like things that are personalised and takes time and effort to make, so he made this for you!",
+  "Just so you know, everything was completely handmade! Not the music though, BMO saw him downloading it from the internet...",
+  "Anyway, he thought a website would be a great idea, because you can carry a little part of your relationship wherever you are in the world",
+  "It even works on your phone too! So make sure to bookmark the page, so you can come back to it, whenever Josh updates the website!",
+  "Josh and BMO love you Audrey! Click 'open' to see what Josh has been working on..."
 ];
 
 const introScreen  = document.getElementById('introScreen');
@@ -334,6 +312,12 @@ function typeCharacter() {
 
 function showLine(index) {
   clearTimeout(typeTimeout);
+  // Stop any currently playing intro voice
+  introVoices.forEach(v => { v.pause(); v.currentTime = 0; });
+  // Play the voice line for this index
+  if (soundOn && introVoices[index]) {
+    introVoices[index].play().catch(() => {});
+  }
   dialogueText.classList.remove('done');
   fullText  = LINES[index];
   charIndex = 0;
@@ -343,17 +327,41 @@ function showLine(index) {
 }
 
 function revealMain() {
-  introScreen.style.transition = 'opacity 0.8s ease';
-  introScreen.style.opacity    = '0';
+  introVoices.forEach(v => { v.pause(); v.currentTime = 0; });
+  introScreen.classList.remove('visible');
   setTimeout(() => {
     introScreen.style.display = 'none';
+    document.getElementById('bookToggle').style.display = 'flex';
+
+    // Apply bg image immediately
+    document.body.style.backgroundImage = 'url("images/bgimg.png")';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+
+    // Create a dark overlay that fades out, revealing the bg beneath
+    const fadeOverlay = document.createElement('div');
+    fadeOverlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 9000;
+      background: #44463f; pointer-events: none;
+      transition: opacity 1.5s ease;
+    `;
+    document.body.appendChild(fadeOverlay);
+    // Trigger fade on next frame
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        fadeOverlay.style.opacity = '0';
+        setTimeout(() => fadeOverlay.remove(), 1600);
+      });
+    });
+
     mainContent.classList.add('visible');
     bgm.play().catch(() => {});
     initGrass();
     initCharacters();
     initBookCover();
     requestAnimationFrame(mainLoop);
-  }, 800);
+  }, 500);
 }
 
 nextBtn.addEventListener('click', () => {
@@ -375,11 +383,36 @@ nextBtn.addEventListener('click', () => {
 
 skipBtn.addEventListener('click', () => {
   clearTimeout(typeTimeout);
+  introVoices.forEach(v => { v.pause(); v.currentTime = 0; });
   revealMain();
 });
 
-// Kick off first line
-showLine(0);
+// ─── BMO SPLASH ──────────────────────────────────────────────────
+
+const bmoSplash    = document.getElementById('bmoSplash');
+const bmoSplashImg = document.getElementById('bmoSplashImg');
+
+bmoSplashImg.addEventListener('click', () => {
+  // Play open sound on click
+  if (soundOn) {
+    openSound.currentTime = 0;
+    openSound.play().catch(() => {});
+  }
+  // Instantly hide splash and show intro — no fade gap means no flash
+  bmoSplash.classList.add('hidden');
+  introScreen.style.display = 'flex';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      introScreen.classList.add('visible');
+      // Slide BMO in shortly after screen appears
+      setTimeout(() => {
+        const avatar = document.getElementById('introAvatar');
+        if (avatar) avatar.classList.add('slide-in');
+      }, 150);
+    });
+  });
+  showLine(0);
+});
 
 
 // ─── PADLOCK / DIAL LOGIC ─────────────────────────────────────────
@@ -447,7 +480,7 @@ dialDisplays.forEach((display, index) => {
 const BOOK_FRAME_COUNT = 20;
 const BOOK_FRAME_W     = 481;
 const BOOK_FRAME_H     = 560;
-const BOOK_FPS         = 18; // frames per second for the unlock animation
+const BOOK_FPS         = 18;
 
 let bookCoverCanvas = null;
 let bookCoverCtx    = null;
@@ -458,7 +491,6 @@ let bookAnimating   = false;
 let bookAnimLastTime = 0;
 
 function initBookCover() {
-  // Replace the <img> with a <canvas>
   const img = document.querySelector('.book-cover');
   bookCoverCanvas = document.createElement('canvas');
   bookCoverCanvas.width  = BOOK_FRAME_W;
@@ -471,7 +503,7 @@ function initBookCover() {
   bookSheet = new Image();
   bookSheet.onload = () => {
     bookSheetLoaded = true;
-    drawBookFrame(0); // show first frame (locked)
+    drawBookFrame(0);
   };
   bookSheet.src = 'images/book/book_spritesheet.png';
 }
@@ -501,11 +533,9 @@ function animateBookOpen(timestamp) {
     drawBookFrame(bookAnimFrame);
 
     if (bookAnimFrame >= BOOK_FRAME_COUNT - 1) {
-      // Animation done — stay on last frame, unlock book
       bookAnimating = false;
       bookUnlocked = true;
       document.querySelector('.book-wrapper').style.cursor = 'pointer';
-      // Show replay button now that animation has played once
       const replayBtn = document.getElementById('replayBtn');
       if (replayBtn) replayBtn.style.display = 'flex';
       return;
@@ -527,12 +557,10 @@ function startBookOpenAnimation() {
   requestAnimationFrame(animateBookOpen);
 }
 
-// Replay button — replays animation without needing the passcode
 const replayBtn = document.getElementById('replayBtn');
 if (replayBtn) {
   replayBtn.addEventListener('click', () => {
     if (bookAnimating) return;
-    // Make sure book is visible before replaying
     const bookWrapper = document.querySelector('.book-wrapper');
     bookWrapper.style.opacity = '1';
     bookWrapper.style.pointerEvents = 'auto';
@@ -551,7 +579,6 @@ openBtn.addEventListener('click', () => {
       openSound.currentTime = 0;
       openSound.play().catch(() => {});
     }
-    // Play the spritesheet unlock animation
     startBookOpenAnimation();
   } else {
     errorMsg.textContent = 'WRONG CODE. TRY AGAIN.';
@@ -567,9 +594,7 @@ openBtn.addEventListener('click', () => {
   }
 });
 
-// Add click handler to book wrapper
 document.querySelector('.book-wrapper').addEventListener('click', (e) => {
-  // Don't trigger page flip if clicking the padlock
   if (e.target.id === 'padlockBtn' || e.target.closest('#padlockBtn')) {
     return;
   }
@@ -647,17 +672,17 @@ window.addEventListener('resize', () => {
   repositionCharacters();
 });
 
-// ─── AUDREY WALK CHARACTER ────────────────────────────────────────
+// ─── CHARACTERS ───────────────────────────────────────────────────
 
-const AUDREY_SHEET_SRC = 'images/characters/audrey_spritesheet.png';
+const AUDREY_SHEET_SRC   = 'images/characters/audrey_spritesheet.png';
 const AUDREY_FRAME_COUNT = 6;
-const AUDREY_FRAME_W = 41;   // px per frame in spritesheet
-const AUDREY_FRAME_H = 100;  // px height of spritesheet
+const AUDREY_FRAME_W     = 41;
+const AUDREY_FRAME_H     = 100;
 
-const JOSH_SHEET_SRC = 'images/characters/josh_spritesheet.png';
+const JOSH_SHEET_SRC   = 'images/characters/josh_spritesheet.png';
 const JOSH_FRAME_COUNT = 6;
-const JOSH_FRAME_W = 41;
-const JOSH_FRAME_H = 100;
+const JOSH_FRAME_W     = 41;
+const JOSH_FRAME_H     = 100;
 
 // ─── DUCK CONSTANTS ───────────────────────────────────────────────
 const DUCK_SHEET_SRC   = 'images/characters/duck_spritesheet.png';
@@ -665,10 +690,7 @@ const DUCK_FRAME_COUNT = 13;
 const DUCK_FRAME_W     = 32;
 const DUCK_FRAME_H     = 32;
 
-// Each duck's rendered height as a fraction of Audrey's rendered height (100px * charScale)
-// Duck 0 = quarter of Audrey, Duck 1 & 2 progressively smaller
 const DUCK_SIZE_RATIOS = [0.75, 0.62, 0.50];
-// How far behind Audrey each duck trails (px gap between Audrey's back edge and duck's front)
 const DUCK_TRAIL_GAPS  = [15, 55, 95];
 
 // ─── BMO CONSTANTS ────────────────────────────────────────────────
@@ -676,9 +698,8 @@ const BMO_SHEET_SRC   = 'images/characters/bmo_spritesheet.png';
 const BMO_FRAME_COUNT = 5;
 const BMO_FRAME_W     = 41;
 const BMO_FRAME_H     = 100;
-// BMO trails behind Josh at this size ratio and gap
 const BMO_SIZE_RATIO  = 0.75;
-const BMO_WIDTH_RATIO = 1.1;  // wider than tall to make him more visible
+const BMO_WIDTH_RATIO = 1.1;
 const BMO_TRAIL_GAP   = 20;
 
 let charCanvas, charCtx;
@@ -687,47 +708,43 @@ let joshSheet   = null;
 let duckSheet   = null;
 let bmoSheet    = null;
 
-// Duck state — x is maintained per-duck, direction mirrors Audrey
 const ducks = DUCK_SIZE_RATIOS.map((ratio, i) => ({
   ratio,
-  gap:       DUCK_TRAIL_GAPS[i],
-  x:         0,
-  frame:     0,
+  gap:        DUCK_TRAIL_GAPS[i],
+  x:          0,
+  frame:      0,
   frameTimer: 0,
-  frameRate: 120 + i * 15, // slightly different waddle speeds
+  frameRate:  120 + i * 15,
 }));
 
-// BMO state — 1 BMO trailing Josh
 const bmo = {
-  ratio:     BMO_SIZE_RATIO,
-  gap:       BMO_TRAIL_GAP,
-  x:         0,
-  frame:     0,
+  ratio:      BMO_SIZE_RATIO,
+  gap:        BMO_TRAIL_GAP,
+  x:          0,
+  frame:      0,
   frameTimer: 0,
-  frameRate: 130,
+  frameRate:  130,
 };
 
-// Character state
 let audrey = {
-  x: 80,
+  x:          80,
   facingLeft: false,
-  frame: 0,
+  frame:      0,
   frameTimer: 0,
-  frameRate: 100,
-  speed: 1.2,
+  frameRate:  100,
+  speed:      1.2,
 };
 
 let josh = {
-  x: 0,       // set in initCharacters
+  x:          0,
   facingLeft: true,
-  frame: 0,
+  frame:      0,
   frameTimer: 0,
-  frameRate: 110,
-  speed: 1.0,
+  frameRate:  110,
+  speed:      1.0,
 };
 
 function getCharScale() {
-  // Keep her ~80-100px tall on all screens; spritesheet is already 100px
   return window.innerWidth < 480 ? 0.7 : 1.0;
 }
 
@@ -737,38 +754,31 @@ function initCharacters() {
   charCanvas.width  = window.innerWidth;
   charCanvas.height = window.innerHeight;
 
-  audreySheet = new Image();
+  audreySheet     = new Image();
   audreySheet.src = AUDREY_SHEET_SRC;
 
-  joshSheet = new Image();
+  joshSheet     = new Image();
   joshSheet.src = JOSH_SHEET_SRC;
 
-  duckSheet = new Image();
+  duckSheet     = new Image();
   duckSheet.src = DUCK_SHEET_SRC;
 
-  bmoSheet = new Image();
+  bmoSheet     = new Image();
   bmoSheet.src = BMO_SHEET_SRC;
 
-  // Start Audrey left of centre, Josh right of centre, walking toward each other
   audrey.x = window.innerWidth * 0.2;
   josh.x   = window.innerWidth * 0.7;
 
-  // Place ducks behind Audrey initially
-  const scale = getCharScale();
-  const audreyW = AUDREY_FRAME_W * scale;
+  const scale   = getCharScale();
   ducks.forEach((duck, i) => {
     const dh  = AUDREY_FRAME_H * scale * duck.ratio;
-    const dw  = dh; // duck frames are square
+    const dw  = dh;
     duck.x = audrey.x - dw - duck.gap - i * 5;
   });
 
-  // Place BMO behind Josh initially
   const joshW = JOSH_FRAME_W * scale;
-  const bmoDH = JOSH_FRAME_H * scale * bmo.ratio;
-  const bmoDW = BMO_FRAME_W * scale * bmo.ratio;
   bmo.x = josh.x + joshW + bmo.gap;
 
-  // Click detection & hover cursor
   charCanvas.addEventListener('click', handleCharClick);
   charCanvas.addEventListener('mousemove', updateCursor);
 }
@@ -812,34 +822,28 @@ function updateCharacters(timestamp) {
     josh.frameTimer = timestamp;
   }
 
-  // Move ducks — each trails behind Audrey at a fixed gap
+  // Move ducks
   ducks.forEach((duck, i) => {
     const dh = AUDREY_FRAME_H * scale * duck.ratio;
     const dw = dh;
-    // Target x: behind Audrey's back edge
     const targetX = audrey.facingLeft
-      ? audrey.x + charW + duck.gap + i * 5   // Audrey moving left, ducks trail to her right
-      : audrey.x - dw - duck.gap - i * 5;      // Audrey moving right, ducks trail to her left
-
-    // Move duck toward target at Audrey's speed
+      ? audrey.x + charW + duck.gap + i * 5
+      : audrey.x - dw - duck.gap - i * 5;
     const diff = targetX - duck.x;
     const step = Math.min(Math.abs(diff), audrey.speed);
     duck.x += Math.sign(diff) * step;
-
-    // Animate duck frames
     if (timestamp - duck.frameTimer > duck.frameRate) {
-      duck.frame     = (duck.frame + 1) % DUCK_FRAME_COUNT;
+      duck.frame      = (duck.frame + 1) % DUCK_FRAME_COUNT;
       duck.frameTimer = timestamp;
     }
   });
 
-  // Move BMO — trails behind Josh at a fixed gap
-  const joshW = JOSH_FRAME_W * scale;
-  const bmoDH = BMO_FRAME_H * scale * bmo.ratio;
-  const bmoDW = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
+  // Move BMO
+  const joshW  = JOSH_FRAME_W * scale;
+  const bmoDW  = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
   const targetBmoX = josh.facingLeft
-    ? josh.x + joshW + bmo.gap       // Josh moving left, BMO trails to his right
-    : josh.x - bmoDW - bmo.gap;      // Josh moving right, BMO trails to his left
+    ? josh.x + joshW + bmo.gap
+    : josh.x - bmoDW - bmo.gap;
   const bmoDiff = targetBmoX - bmo.x;
   const bmoStep = Math.min(Math.abs(bmoDiff), josh.speed);
   bmo.x += Math.sign(bmoDiff) * bmoStep;
@@ -862,9 +866,9 @@ let charTypeTimeout    = null;
 let charFullText       = '';
 let charCharIndex      = 0;
 
-const charOverlay      = document.createElement('div');
-charOverlay.id         = 'charDialogueOverlay';
-charOverlay.innerHTML  = `
+const charOverlay     = document.createElement('div');
+charOverlay.id        = 'charDialogueOverlay';
+charOverlay.innerHTML = `
   <div id="charDialogueBox">
     <div id="charDialogueText"></div>
     <div id="charDialogueButtons">
@@ -895,18 +899,18 @@ function charTypeCharacter() {
 function charShowLine(index) {
   clearTimeout(charTypeTimeout);
   charDialogueText.classList.remove('done');
-  charFullText      = activeLines[index];
-  charCharIndex     = 0;
-  charIsTyping      = true;
+  charFullText  = activeLines[index];
+  charCharIndex = 0;
+  charIsTyping  = true;
   charDialogueText.textContent = '';
   charTypeCharacter();
 }
 
 function openCharDialogue(lines) {
   if (charDialogueActive) return;
-  charDialogueActive   = true;
-  activeLines          = lines;
-  charCurrentLine      = 0;
+  charDialogueActive      = true;
+  activeLines             = lines;
+  charCurrentLine         = 0;
   charNextBtn.textContent = 'NEXT ▶';
   charOverlay.classList.add('active');
   charShowLine(0);
@@ -958,13 +962,13 @@ function handleCharClick(e) {
   const mx     = (e.clientX - rect.left) * scaleX;
   const my     = (e.clientY - rect.top)  * scaleY;
   const { dw, dh, drawY } = getCharHitInfo();
-  const scale  = getCharScale();
+  const scale   = getCharScale();
   const groundY = window.innerHeight - 120 + (120 - 16);
 
   const hitAudrey = mx >= audrey.x - 10 && mx <= audrey.x + dw + 10
-                 && my >= drawY   - 10 && my <= drawY   + dh + 10;
+                 && my >= drawY    - 10 && my <= drawY    + dh + 10;
   const hitJosh   = mx >= josh.x   - 10 && mx <= josh.x   + dw + 10
-                 && my >= drawY   - 10 && my <= drawY   + dh + 10;
+                 && my >= drawY    - 10 && my <= drawY    + dh + 10;
 
   // Check duck hits
   let hitDuck = false;
@@ -973,7 +977,7 @@ function handleCharClick(e) {
     const ddw    = ddh;
     const ddrawY = groundY - ddh * 0.75;
     if (mx >= duck.x - 6 && mx <= duck.x + ddw + 6 &&
-        my >= ddrawY - 6 && my <= ddrawY + ddh + 6) {
+        my >= ddrawY  - 6 && my <= ddrawY  + ddh + 6) {
       hitDuck = true;
     }
   });
@@ -1019,7 +1023,7 @@ function updateCursor(e) {
     const ddw    = ddh;
     const ddrawY = groundY - ddh * 0.75;
     if (mx >= duck.x - 6 && mx <= duck.x + ddw + 6 &&
-        my >= ddrawY - 6 && my <= ddrawY + ddh + 6) {
+        my >= ddrawY  - 6 && my <= ddrawY  + ddh + 6) {
       hitDuck = true;
     }
   });
@@ -1028,8 +1032,8 @@ function updateCursor(e) {
     || (mx >= audrey.x - 10 && mx <= audrey.x + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10)
     || (mx >= josh.x   - 10 && mx <= josh.x   + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10)
     || (() => {
-      const bDW = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
-      const bDH = BMO_FRAME_H * scale * bmo.ratio;
+      const bDW    = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
+      const bDH    = BMO_FRAME_H * scale * bmo.ratio;
       const bDrawY = groundY - bDH;
       return mx >= bmo.x - 6 && mx <= bmo.x + bDW + 6 && my >= bDrawY - 6 && my <= bDrawY + bDH + 6;
     })();
@@ -1048,17 +1052,11 @@ function drawNametag(cx, topY, label) {
   const bx       = cx - bw / 2;
   const by       = topY - bh - 6;
 
-  // shadow / border
-  // charCtx.fillStyle = '#000';
-  // charCtx.fillRect(Math.round(bx) + 2, Math.round(by) + 2, Math.ceil(bw), Math.ceil(bh));
-  // background
   charCtx.fillStyle = '#1a25306b';
   charCtx.fillRect(Math.round(bx), Math.round(by), Math.ceil(bw), Math.ceil(bh));
-  // border
   charCtx.strokeStyle = '#a8bfcf6e';
   charCtx.lineWidth   = 1.5;
   charCtx.strokeRect(Math.round(bx) + 0.5, Math.round(by) + 0.5, Math.ceil(bw) - 1, Math.ceil(bh) - 1);
-  // text
   charCtx.fillStyle    = '#f0e8d0';
   charCtx.textBaseline = 'top';
   charCtx.fillText(label, Math.round(bx + pad), Math.round(by + pad));
@@ -1074,7 +1072,7 @@ function drawCharacters() {
   const groundY = window.innerHeight - 120 + (120 - 16);
   const drawY   = groundY - dh;
 
-  // ── Draw Audrey (only if loaded) ──
+  // ── Draw Audrey ──
   if (audreySheet && audreySheet.complete && audreySheet.naturalWidth > 0) {
     charCtx.save();
     if (audrey.facingLeft) {
@@ -1088,7 +1086,7 @@ function drawCharacters() {
     drawNametag(Math.round(audrey.x + dw / 2), Math.round(drawY), 'rxyn');
   }
 
-  // ── Draw Josh (only if loaded) ──
+  // ── Draw Josh ──
   if (joshSheet && joshSheet.complete && joshSheet.naturalWidth > 0) {
     const jdw    = JOSH_FRAME_W * scale;
     const jdh    = JOSH_FRAME_H * scale;
@@ -1104,15 +1102,15 @@ function drawCharacters() {
     charCtx.restore();
     drawNametag(Math.round(josh.x + jdw / 2), Math.round(jDrawY), 'kimjongtoes');
   }
+
   // ── Draw ducks ──
   if (duckSheet && duckSheet.complete && duckSheet.naturalWidth > 0) {
     charCtx.imageSmoothingEnabled = false;
     ducks.forEach((duck) => {
-      const dh    = AUDREY_FRAME_H * scale * duck.ratio;
-      const dw    = dh;
-      const dDrawY = groundY - dh * 0.75; // sit on ground
+      const dh     = AUDREY_FRAME_H * scale * duck.ratio;
+      const dw     = dh;
+      const dDrawY = groundY - dh * 0.75;
       charCtx.save();
-      // Ducks face same direction as Audrey
       if (audrey.facingLeft) {
         charCtx.translate(Math.round(duck.x) + dw, 0);
         charCtx.scale(-1, 1);
@@ -1143,6 +1141,8 @@ function drawCharacters() {
     charCtx.imageSmoothingEnabled = true;
   }
 }
+
+// ─── MAIN ANIMATION LOOP ──────────────────────────────────────────
 
 function mainLoop(timestamp) {
   drawGrass(timestamp);
