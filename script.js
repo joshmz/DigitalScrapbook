@@ -23,7 +23,7 @@ quackSound.volume = 0.8;
 
 const bgm = new Audio('SFX/BGM.mp3');
 bgm.loop   = true;
-bgm.volume = 0.4;
+bgm.volume = 0.2;
 
 let soundOn = true;
 
@@ -266,7 +266,7 @@ const LINES = [
   "You'll be able to see ALLLL our good times, bad times, loving times and even the embarrassing times",
   "I know you really like things that are personalised and takes time and effort to make, so I made this!",
   "Just so you know, everything was handmade (Excluding the music and sounds cos idk how to do that...)",
-  "BUT I MADE ALL THE ARTWORK!!!",
+  "BUT ALL THE ARTWORK (except the background) WAS MADE BY ME!!!!",
   "Anyway, I thought a website would be cool cos this way, you can always carry a little part of our relationship wherever you are in the world",
   "And you don't even need to carry a big ahh clunky book!",
   "And so, without further ado, press 'open' to see what I've been working on..."

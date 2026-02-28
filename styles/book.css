@@ -2,7 +2,7 @@
 
 .book-wrapper {
   position: relative;
-  width: min(80vh);
+  width: min(50vh);
   animation: float 2.5s ease-in-out infinite;
   filter: drop-shadow(0 24px 40px rgba(0,0,0,0.7));
   transition: filter 0.3s ease, z-index 0.3s ease;
@@ -24,10 +24,11 @@
 
 .padlock-hitbox {
   position: absolute;
-  top: 42%;
-  right: 12%;
-  width: 15%;
-  height: 20%;
+  top: 37%;
+  right: 4%;
+  width: 20%;
+  height: 25%;
+  /* border: 3px solid #fafafa; */
   cursor: pointer;
 }
 
