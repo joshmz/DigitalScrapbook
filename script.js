@@ -24,6 +24,8 @@ swordSound.volume = 1;
 const quackSound = new Audio('SFX/quack.mp3');
 quackSound.volume = 0.8;
 
+const bmoSound = new Audio('SFX/bmo.mp3');
+bmoSound.volume = 0.8;
 
 const bgm = new Audio('SFX/BGM.mp3');
 bgm.loop   = true;
@@ -45,8 +47,13 @@ bookToggle.addEventListener('click', () => {
   }
   bookVisible = !bookVisible;
   bookWrapper.style.opacity = bookVisible ? '1' : '0';
-  bookWrapper.style.pointerEvents = bookVisible ? 'auto' : 'none';
-  bookToggle.textContent = bookVisible ? '📖' : '🏞️';
+  // Delay pointer-events so book can't be clicked mid-fade
+  if (bookVisible) {
+    bookWrapper.style.pointerEvents = 'auto';
+  } else {
+    setTimeout(() => { bookWrapper.style.pointerEvents = 'none'; }, 600);
+  }
+  bookToggle.textContent = bookVisible ? '👁️' : '🏔️';
   bookToggle.title = bookVisible ? 'Hide Book' : 'Show Book';
 });
 
@@ -197,6 +204,10 @@ async function showPageFlip() {
   bookToggle.textContent = '✕';
   bookToggle.title = 'Close Book';
 
+  // Hide replay button while book is open
+  const replayBtn = document.getElementById('replayBtn');
+  if (replayBtn) replayBtn.style.display = 'none';
+
   // Show page flip container
   container.classList.add('active');
 }
@@ -222,8 +233,12 @@ function closePageFlip() {
   if (cc) cc.style.pointerEvents = 'all';
 
   // Restore book toggle
-  bookToggle.textContent = bookVisible ? '📖' : '🏞️';
+  bookToggle.textContent = bookVisible ? '👁️' : '🏔️';
   bookToggle.title = bookVisible ? 'Hide Book' : 'Show Book';
+
+  // Restore replay button
+  const rb = document.getElementById('replayBtn');
+  if (rb) rb.style.display = 'flex';
 }
 
 // Close book button
@@ -490,6 +505,9 @@ function animateBookOpen(timestamp) {
       bookAnimating = false;
       bookUnlocked = true;
       document.querySelector('.book-wrapper').style.cursor = 'pointer';
+      // Show replay button now that animation has played once
+      const replayBtn = document.getElementById('replayBtn');
+      if (replayBtn) replayBtn.style.display = 'flex';
       return;
     }
   }
@@ -509,8 +527,21 @@ function startBookOpenAnimation() {
   requestAnimationFrame(animateBookOpen);
 }
 
-// Initialise as soon as main content is shown
-const _origRevealMain = revealMain;
+// Replay button — replays animation without needing the passcode
+const replayBtn = document.getElementById('replayBtn');
+if (replayBtn) {
+  replayBtn.addEventListener('click', () => {
+    if (bookAnimating) return;
+    // Make sure book is visible before replaying
+    const bookWrapper = document.querySelector('.book-wrapper');
+    bookWrapper.style.opacity = '1';
+    bookWrapper.style.pointerEvents = 'auto';
+    bookVisible = true;
+    bookToggle.textContent = '👁️';
+    bookToggle.title = 'Hide Book';
+    startBookOpenAnimation();
+  });
+}
 
 openBtn.addEventListener('click', () => {
   const isCorrect = values.every((val, i) => val === CORRECT[i]);
@@ -640,10 +671,21 @@ const DUCK_SIZE_RATIOS = [0.75, 0.62, 0.50];
 // How far behind Audrey each duck trails (px gap between Audrey's back edge and duck's front)
 const DUCK_TRAIL_GAPS  = [15, 55, 95];
 
+// ─── BMO CONSTANTS ────────────────────────────────────────────────
+const BMO_SHEET_SRC   = 'images/characters/bmo_spritesheet.png';
+const BMO_FRAME_COUNT = 5;
+const BMO_FRAME_W     = 41;
+const BMO_FRAME_H     = 100;
+// BMO trails behind Josh at this size ratio and gap
+const BMO_SIZE_RATIO  = 0.75;
+const BMO_WIDTH_RATIO = 1.1;  // wider than tall to make him more visible
+const BMO_TRAIL_GAP   = 20;
+
 let charCanvas, charCtx;
 let audreySheet = null;
 let joshSheet   = null;
 let duckSheet   = null;
+let bmoSheet    = null;
 
 // Duck state — x is maintained per-duck, direction mirrors Audrey
 const ducks = DUCK_SIZE_RATIOS.map((ratio, i) => ({
@@ -654,6 +696,16 @@ const ducks = DUCK_SIZE_RATIOS.map((ratio, i) => ({
   frameTimer: 0,
   frameRate: 120 + i * 15, // slightly different waddle speeds
 }));
+
+// BMO state — 1 BMO trailing Josh
+const bmo = {
+  ratio:     BMO_SIZE_RATIO,
+  gap:       BMO_TRAIL_GAP,
+  x:         0,
+  frame:     0,
+  frameTimer: 0,
+  frameRate: 130,
+};
 
 // Character state
 let audrey = {
@@ -694,6 +746,9 @@ function initCharacters() {
   duckSheet = new Image();
   duckSheet.src = DUCK_SHEET_SRC;
 
+  bmoSheet = new Image();
+  bmoSheet.src = BMO_SHEET_SRC;
+
   // Start Audrey left of centre, Josh right of centre, walking toward each other
   audrey.x = window.innerWidth * 0.2;
   josh.x   = window.innerWidth * 0.7;
@@ -706,6 +761,12 @@ function initCharacters() {
     const dw  = dh; // duck frames are square
     duck.x = audrey.x - dw - duck.gap - i * 5;
   });
+
+  // Place BMO behind Josh initially
+  const joshW = JOSH_FRAME_W * scale;
+  const bmoDH = JOSH_FRAME_H * scale * bmo.ratio;
+  const bmoDW = BMO_FRAME_W * scale * bmo.ratio;
+  bmo.x = josh.x + joshW + bmo.gap;
 
   // Click detection & hover cursor
   charCanvas.addEventListener('click', handleCharClick);
@@ -771,6 +832,21 @@ function updateCharacters(timestamp) {
       duck.frameTimer = timestamp;
     }
   });
+
+  // Move BMO — trails behind Josh at a fixed gap
+  const joshW = JOSH_FRAME_W * scale;
+  const bmoDH = BMO_FRAME_H * scale * bmo.ratio;
+  const bmoDW = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
+  const targetBmoX = josh.facingLeft
+    ? josh.x + joshW + bmo.gap       // Josh moving left, BMO trails to his right
+    : josh.x - bmoDW - bmo.gap;      // Josh moving right, BMO trails to his left
+  const bmoDiff = targetBmoX - bmo.x;
+  const bmoStep = Math.min(Math.abs(bmoDiff), josh.speed);
+  bmo.x += Math.sign(bmoDiff) * bmoStep;
+  if (timestamp - bmo.frameTimer > bmo.frameRate) {
+    bmo.frame      = (bmo.frame + 1) % BMO_FRAME_COUNT;
+    bmo.frameTimer = timestamp;
+  }
 }
 
 // ─── CHARACTER DIALOGUE ───────────────────────────────────────────
@@ -902,7 +978,19 @@ function handleCharClick(e) {
     }
   });
 
-  if (hitDuck) {
+  // Check BMO hit
+  const bDW    = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
+  const bDH    = BMO_FRAME_H * scale * bmo.ratio;
+  const bDrawY = groundY - bDH;
+  const hitBmo = mx >= bmo.x - 6 && mx <= bmo.x + bDW + 6 &&
+                 my >= bDrawY - 6 && my <= bDrawY + bDH + 6;
+
+  if (hitBmo) {
+    if (soundOn) {
+      bmoSound.currentTime = 0;
+      bmoSound.play().catch(() => {});
+    }
+  } else if (hitDuck) {
     if (soundOn) {
       quackSound.currentTime = 0;
       quackSound.play().catch(() => {});
@@ -938,7 +1026,13 @@ function updateCursor(e) {
 
   const hitAny = hitDuck
     || (mx >= audrey.x - 10 && mx <= audrey.x + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10)
-    || (mx >= josh.x   - 10 && mx <= josh.x   + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10);
+    || (mx >= josh.x   - 10 && mx <= josh.x   + dw + 10 && my >= drawY - 10 && my <= drawY + dh + 10)
+    || (() => {
+      const bDW = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
+      const bDH = BMO_FRAME_H * scale * bmo.ratio;
+      const bDrawY = groundY - bDH;
+      return mx >= bmo.x - 6 && mx <= bmo.x + bDW + 6 && my >= bDrawY - 6 && my <= bDrawY + bDH + 6;
+    })();
   charCanvas.style.cursor = hitAny ? 'pointer' : 'default';
 }
 
@@ -1028,6 +1122,24 @@ function drawCharacters() {
       }
       charCtx.restore();
     });
+    charCtx.imageSmoothingEnabled = true;
+  }
+
+  // ── Draw BMO (follows Josh) ──
+  if (bmoSheet && bmoSheet.complete && bmoSheet.naturalWidth > 0) {
+    const bDW    = BMO_FRAME_W * scale * bmo.ratio * BMO_WIDTH_RATIO;
+    const bDH    = BMO_FRAME_H * scale * bmo.ratio;
+    const bDrawY = groundY - bDH;
+    charCtx.imageSmoothingEnabled = false;
+    charCtx.save();
+    if (!josh.facingLeft) {
+      charCtx.translate(Math.round(bmo.x) + bDW, 0);
+      charCtx.scale(-1, 1);
+      charCtx.drawImage(bmoSheet, bmo.frame * BMO_FRAME_W, 0, BMO_FRAME_W, BMO_FRAME_H, 0, Math.round(bDrawY), bDW, bDH);
+    } else {
+      charCtx.drawImage(bmoSheet, bmo.frame * BMO_FRAME_W, 0, BMO_FRAME_W, BMO_FRAME_H, Math.round(bmo.x), Math.round(bDrawY), bDW, bDH);
+    }
+    charCtx.restore();
     charCtx.imageSmoothingEnabled = true;
   }
 }
