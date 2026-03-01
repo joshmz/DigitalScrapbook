@@ -1,0 +1,87 @@
+/* ─── PAGE CONTENT ─────────────────────────── */
+
+.scrap-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  container-type: size;
+  container-name: page;
+}
+
+/* ─── SCRAPBOOK PHOTO ────────────────────────── */
+
+.scrap-photo-wrapper {
+  position: absolute;
+  border: 3px solid #3e2710;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.25);
+  background: #fff;
+  padding: 4px;
+}
+
+.scrap-sticker-wrapper {
+  position: absolute;
+  /* border: 3px solid #3e2710; */
+  /* box-shadow: 3px 3px 0 rgba(0,0,0,0.25); */
+  /* background: #fff; */
+  /* padding: 4px; */
+}
+
+.scrap-photo {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  cursor: zoom-in;
+  transition: transform 0.15s ease;
+}
+
+.scrap-photo:hover {
+  transform: scale(1.03);
+}
+
+/* ─── SCRAPBOOK TEXT ─────────────────────────── */
+
+.scrap-text {
+  position: absolute;
+  font-family: 'Press Start 2P', monospace;
+  color: #3e2710;
+  line-height: 2;
+  font-size: 2cqw;
+}
+
+/* ─── PAGE SPECIFIC POSITIONS ──────────────── */
+.p11-photo1 {
+  top: 10%;
+  right: 5%;
+  width: 35cqw;
+  rotate: -5deg;
+}
+
+.p11-photo2 {
+  top: 19%;
+  left: 20%;
+  width: 37cqw;
+  rotate: 5deg;
+}
+
+.p11-photo3 {
+  top: 57%;
+  left: 23%;
+  width: 32cqw;
+  rotate: -3deg;
+}
+
+.p11-photo4 {
+  top: 50%;
+  right: 10%;
+  width: 30cqw;
+  rotate: 3deg;
+}
+
+.p11-photo5 {
+  top: 37%;
+  right: 27%;
+  width: 35cqw;
+  /* rotate: 3deg; */
+}

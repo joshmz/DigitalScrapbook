@@ -94,7 +94,7 @@ function playBookCloseSound() {
 
 // ─── PAGE LOADER ─────────────────────────────────────────────────
 
-const TOTAL_PAGES = 10;
+const TOTAL_PAGES = 12;
 let pagesLoaded = false;
 
 async function loadPages() {
