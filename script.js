@@ -1161,9 +1161,11 @@ document.getElementById('pageFlip').addEventListener('click', (e) => {
   if (!img) return;
   zoomImg.src = img.src;
   zoomOverlay.classList.add('active');
+  if (closeBookBtn) closeBookBtn.style.visibility = 'hidden';
 });
 
 zoomOverlay.addEventListener('click', () => {
   zoomOverlay.classList.remove('active');
   zoomImg.src = '';
+  if (closeBookBtn) closeBookBtn.style.visibility = 'visible';
 });
