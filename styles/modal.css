@@ -162,3 +162,55 @@
   80%  { transform: translateX(4px); }
   100% { transform: translateX(0); }
 }
+
+/* ─── ZOOM OVERLAY ───────────────────────────── */
+
+#zoomOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  cursor: zoom-out;
+  animation: fadeIn 0.2s ease;
+}
+
+#zoomOverlay.active {
+  display: flex;
+}
+
+#zoomImg {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  /* box-shadow: 0 8px 60px rgba(0, 0, 0, 0.8); */
+  /* border: 3px solid #ffffff; */
+  cursor: default;
+  animation: zoomIn 0.2s ease;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ─── HIDE UI WHEN ZOOM IS ACTIVE ───────────────── */
+/* Use visibility+opacity so no layout shift occurs */
+body:has(#zoomOverlay.active) #bookToggle,
+body:has(#zoomOverlay.active) #soundToggle,
+body:has(#zoomOverlay.active) #replayBtn,
+body:has(#zoomOverlay.active) #closeBookBtn,
+body:has(#zoomOverlay.active) .page-arrow,
+body:has(#zoomOverlay.active) .page-label {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
