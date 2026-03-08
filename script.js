@@ -27,6 +27,9 @@ quackSound.volume = 0.8;
 const bmoSound = new Audio('SFX/bmo.mp3');
 bmoSound.volume = 0.8;
 
+const iceKingSound = new Audio('SFX/iceking.mp3');
+iceKingSound.volume = 0.4;
+
 const introVoices = [1,2,3,4,5,6,7].map(n => {
   const a = new Audio(`SFX/intro/bmo${n}.mp3`);
   a.volume = 1.0;
@@ -702,11 +705,19 @@ const BMO_SIZE_RATIO  = 0.75;
 const BMO_WIDTH_RATIO = 1.1;
 const BMO_TRAIL_GAP   = 20;
 
+// ─── ICE KING CONSTANTS ───────────────────────────────────────────
+const ICE_KING_SHEET_SRC   = 'images/characters/iceking_spritesheet.png';
+const ICE_KING_FRAME_COUNT = 6;
+const ICE_KING_FRAME_W     = 235;
+const ICE_KING_FRAME_H     = 275;
+const ICE_KING_SIZE_RATIO  = 0.55;
+
 let charCanvas, charCtx;
-let audreySheet = null;
-let joshSheet   = null;
-let duckSheet   = null;
-let bmoSheet    = null;
+let audreySheet  = null;
+let joshSheet    = null;
+let duckSheet    = null;
+let bmoSheet     = null;
+let iceKingSheet = null;
 
 const ducks = DUCK_SIZE_RATIOS.map((ratio, i) => ({
   ratio,
@@ -724,6 +735,23 @@ const bmo = {
   frame:      0,
   frameTimer: 0,
   frameRate:  130,
+};
+
+// Ice King flies across the screen at a higher y-position
+// States: 'flying' (moving across), 'offscreen' (waiting to re-enter)
+let iceKing = {
+  x:           -300,
+  y:           0,        // set in initCharacters relative to screen height
+  facingLeft:  false,    // false = flying right
+  frame:       0,
+  frameTimer:  0,
+  frameRate:   80,
+  speed:       2.2,
+  state:       'offscreen',
+  offscreenTimer: 0,
+  offscreenDelay: 0,     // randomised 5–10s wait
+  lastExitSide:   'left', // which side he last flew off ('left' or 'right')
+  sizeRatio:      0.55,  // randomised each entry (0.3 = far, 0.8 = close)
 };
 
 let audrey = {
@@ -766,6 +794,9 @@ function initCharacters() {
   bmoSheet     = new Image();
   bmoSheet.src = BMO_SHEET_SRC;
 
+  iceKingSheet     = new Image();
+  iceKingSheet.src = ICE_KING_SHEET_SRC;
+
   audrey.x = window.innerWidth * 0.2;
   josh.x   = window.innerWidth * 0.7;
 
@@ -778,6 +809,11 @@ function initCharacters() {
 
   const joshW = JOSH_FRAME_W * scale;
   bmo.x = josh.x + joshW + bmo.gap;
+
+  // Ice King starts offscreen — will fly in after a short delay
+  iceKing.y            = window.innerHeight * 0.18;
+  iceKing.offscreenDelay = 5000 + Math.random() * 5000;
+  iceKing.offscreenTimer = performance.now();
 
   charCanvas.addEventListener('click', handleCharClick);
   charCanvas.addEventListener('mousemove', updateCursor);
@@ -850,6 +886,49 @@ function updateCharacters(timestamp) {
   if (timestamp - bmo.frameTimer > bmo.frameRate) {
     bmo.frame      = (bmo.frame + 1) % BMO_FRAME_COUNT;
     bmo.frameTimer = timestamp;
+  }
+
+  // ── Update Ice King ──
+  if (iceKing.state === 'offscreen') {
+    // Wait for the delay, then fly in from the last exit side
+    if (timestamp - iceKing.offscreenTimer >= iceKing.offscreenDelay) {
+      // Randomise size: 0.3 (far/small) to 0.8 (close/large)
+      iceKing.sizeRatio = 0.2 + Math.random() * 0.3;
+      // Closer (bigger) passes fly lower, further (smaller) passes fly higher
+      iceKing.y = window.innerHeight * (0.05 + (1 - iceKing.sizeRatio / 0.5) * 0.25);
+      iceKing.state = 'flying';
+      const ikEntryW = ICE_KING_FRAME_W * scale * iceKing.sizeRatio;
+      if (iceKing.lastExitSide === 'right') {
+        iceKing.x          = window.innerWidth + 10;
+        iceKing.facingLeft = true;
+      } else {
+        iceKing.x          = -ikEntryW - 10;
+        iceKing.facingLeft = false;
+      }
+    }
+  } else {
+    // Flying
+    const ikW = ICE_KING_FRAME_W * scale * iceKing.sizeRatio;
+    iceKing.x += iceKing.facingLeft ? -iceKing.speed : iceKing.speed;
+
+    // Animate frames
+    if (timestamp - iceKing.frameTimer > iceKing.frameRate) {
+      iceKing.frame      = (iceKing.frame + 1) % ICE_KING_FRAME_COUNT;
+      iceKing.frameTimer = timestamp;
+    }
+
+    // Check if he flew off screen
+    if (!iceKing.facingLeft && iceKing.x > window.innerWidth + 10) {
+      iceKing.state          = 'offscreen';
+      iceKing.lastExitSide   = 'right';
+      iceKing.offscreenTimer = timestamp;
+      iceKing.offscreenDelay = 5000 + Math.random() * 5000;
+    } else if (iceKing.facingLeft && iceKing.x < -ikW - 10) {
+      iceKing.state          = 'offscreen';
+      iceKing.lastExitSide   = 'left';
+      iceKing.offscreenTimer = timestamp;
+      iceKing.offscreenDelay = 5000 + Math.random() * 5000;
+    }
   }
 }
 
@@ -989,7 +1068,20 @@ function handleCharClick(e) {
   const hitBmo = mx >= bmo.x - 6 && mx <= bmo.x + bDW + 6 &&
                  my >= bDrawY - 6 && my <= bDrawY + bDH + 6;
 
-  if (hitBmo) {
+  // Check Ice King hit
+  const ikW     = ICE_KING_FRAME_W * scale * iceKing.sizeRatio;
+  const ikH     = ICE_KING_FRAME_H * scale * iceKing.sizeRatio;
+  const ikDrawY = iceKing.y;
+  const hitIceKing = iceKing.state === 'flying'
+    && mx >= iceKing.x - 6 && mx <= iceKing.x + ikW + 6
+    && my >= ikDrawY  - 6 && my <= ikDrawY  + ikH + 6;
+
+  if (hitIceKing) {
+    if (soundOn) {
+      iceKingSound.currentTime = 0;
+      iceKingSound.play().catch(() => {});
+    }
+  } else if (hitBmo) {
     if (soundOn) {
       bmoSound.currentTime = 0;
       bmoSound.play().catch(() => {});
@@ -1036,6 +1128,13 @@ function updateCursor(e) {
       const bDH    = BMO_FRAME_H * scale * bmo.ratio;
       const bDrawY = groundY - bDH;
       return mx >= bmo.x - 6 && mx <= bmo.x + bDW + 6 && my >= bDrawY - 6 && my <= bDrawY + bDH + 6;
+    })()
+    || (() => {
+      if (iceKing.state !== 'flying') return false;
+      const ikW = ICE_KING_FRAME_W * scale * iceKing.sizeRatio;
+      const ikH = ICE_KING_FRAME_H * scale * iceKing.sizeRatio;
+      return mx >= iceKing.x - 6 && mx <= iceKing.x + ikW + 6
+          && my >= iceKing.y  - 6 && my <= iceKing.y  + ikH + 6;
     })();
   charCanvas.style.cursor = hitAny ? 'pointer' : 'default';
 }
@@ -1136,6 +1235,24 @@ function drawCharacters() {
       charCtx.drawImage(bmoSheet, bmo.frame * BMO_FRAME_W, 0, BMO_FRAME_W, BMO_FRAME_H, 0, Math.round(bDrawY), bDW, bDH);
     } else {
       charCtx.drawImage(bmoSheet, bmo.frame * BMO_FRAME_W, 0, BMO_FRAME_W, BMO_FRAME_H, Math.round(bmo.x), Math.round(bDrawY), bDW, bDH);
+    }
+    charCtx.restore();
+    charCtx.imageSmoothingEnabled = true;
+  }
+
+  // ── Draw Ice King (flying) ──
+  if (iceKingSheet && iceKingSheet.complete && iceKingSheet.naturalWidth > 0 && iceKing.state === 'flying') {
+    const ikW    = ICE_KING_FRAME_W * scale * iceKing.sizeRatio;
+    const ikH    = ICE_KING_FRAME_H * scale * iceKing.sizeRatio;
+    const ikDrawY = Math.round(iceKing.y);
+    charCtx.imageSmoothingEnabled = false;
+    charCtx.save();
+    if (iceKing.facingLeft) {
+      charCtx.translate(Math.round(iceKing.x) + ikW, 0);
+      charCtx.scale(-1, 1);
+      charCtx.drawImage(iceKingSheet, iceKing.frame * ICE_KING_FRAME_W, 0, ICE_KING_FRAME_W, ICE_KING_FRAME_H, 0, ikDrawY, ikW, ikH);
+    } else {
+      charCtx.drawImage(iceKingSheet, iceKing.frame * ICE_KING_FRAME_W, 0, ICE_KING_FRAME_W, ICE_KING_FRAME_H, Math.round(iceKing.x), ikDrawY, ikW, ikH);
     }
     charCtx.restore();
     charCtx.imageSmoothingEnabled = true;

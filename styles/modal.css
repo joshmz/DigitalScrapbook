@@ -186,7 +186,7 @@
   max-height: 90vh;
   object-fit: contain;
   /* box-shadow: 0 8px 60px rgba(0, 0, 0, 0.8); */
-  /* border: 3px solid #ffffff; */
+  /* border: 3px solid #96886f; */
   cursor: default;
   animation: zoomIn 0.2s ease;
   pointer-events: none;
@@ -214,3 +214,34 @@ body:has(#zoomOverlay.active) .page-label {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* ─── PAGE ARROWS ────────────────────────────── */
+
+.page-arrow {
+  position: absolute;
+  bottom: 20px;
+  background: #2a3a47 !important;
+  border: 3px solid #7a8fa6 !important;
+  color: #fff !important;
+  font-size: 1.5rem;
+  padding: 12px 16px;
+  cursor: pointer;
+  z-index: 10002;
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1;
+  box-shadow: 3px 3px 0 #4a5f72 !important;
+  border-radius: 0 !important;
+  transition: background 0.15s, box-shadow 0.1s;
+}
+
+.page-arrow:hover {
+  background: #3a4f60 !important;
+}
+
+.page-arrow:active {
+  transform: translate(2px, 2px);
+  box-shadow: none !important;
+}
+
+.page-arrow-left  { left: 20px; }
+.page-arrow-right { right: 20px; }
