@@ -21,10 +21,6 @@
 
 .scrap-sticker-wrapper {
   position: absolute;
-  /* border: 3px solid #3e2710; */
-  /* box-shadow: 3px 3px 0 rgba(0,0,0,0.25); */
-  /* background: #fff; */
-  /* padding: 4px; */
 }
 
 .scrap-photo {
@@ -51,52 +47,43 @@
 }
 
 /* ─── PAGE SPECIFIC POSITIONS ──────────────── */
-.p5-photo1 {
+.p17-photo1 {
   top: 8%;
-  right: 24%;
-  width: 27cqw;
+  right: 10%;
+  width: 34cqw;
   rotate: 2deg;
 }
 
-.p5-photo2 {
-  top: 20%;
-  right: 8%;
-  width: 29cqw;
-  rotate: 4deg;
-}
-
-.p5-photo4 {
-  top: 17%;
-  left: 20%;
-  width: 33cqw;
-  rotate: -7deg;
-}
-
-.p5-photo3 {
-  top: 45%;
-  right: 13%;
-  width: 35cqw;
+.p17-photo2 {
+  top: 38%;
+  left: 10%;
+  width: 32cqw;
   rotate: -3deg;
 }
 
-.p5-photo5 {
-  top: 45%;
-  left: 25%;
-  width: 30cqw;
-  rotate: 2deg;
+.p17-photo3 {
+  top: 60%;
+  right: 18%;
+  width: 26cqw;
+  rotate: 3deg;
 }
 
-.scrap-text.p5-text1{
-  top: 83%;
-  left: 56%;
-  width: 40cqw;
+.scrap-text.p17-text1{
+  top: 20%;
+  left: 18%;
+  width: 34cqw;
+  font-size: 2cqw;
+}
+
+.scrap-text.p17-text2{
+  top: 72%;
+  left: 10%;
+  width: 60cqw;
   font-size: 1.8cqw;
-  rotate: -1deg;
 }
 
-.heart{
-  top: 42%;
-  left: 49%;
-  width: 13cqw;
-  rotate: -5deg;
+.p17-photo4{
+  top: 6%;
+  left: 36%;
+  width: 9cqw;
 }

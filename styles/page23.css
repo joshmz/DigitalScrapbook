@@ -85,3 +85,30 @@
   width: 35cqw;
   /* rotate: 3deg; */
 }
+
+.p23-photo1 {
+  top: 8%;
+  right: 6%;
+  width: 38cqw;
+}
+
+.p23-text1 {
+  top: 36%;
+  left: 12%;
+  width: 44cqw;
+  font-size: 1.95cqw;
+}
+
+.p23-photo2 {
+  top: 54%;
+  left: 12%;
+  width: 32cqw;
+  rotate: -4deg;
+}
+
+.p23-text2 {
+  top: 78%;
+  left: 10%;
+  width: 78cqw;
+  font-size: 1.8cqw;
+}

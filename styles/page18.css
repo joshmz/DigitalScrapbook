@@ -51,25 +51,35 @@
 }
 
 /* ─── PAGE SPECIFIC POSITIONS ──────────────── */
-.p6-photo1 {
-  top: 11%;
-  left: 9%;
-  width: 42cqw;
-  /* rotate: -5deg; */
+.p18-photo1 {
+  top: 10%;
+  left: 8%;
+  width: 38cqw;
 }
 
-.scrap-text.p6-text1 {
-  top: 64%;
-  left: 11%;
-  width: 70cqw;
-  font-size: 1.8cqw;
-  /* rotate: -5deg; */
-}
-
-.scrap-text.p6-text2 {
+.scrap-text.p18-text1 {
   top: 18%;
-  right: 18%;
+  right: 12%;
+  width: 36cqw;
+  font-size: 1.9cqw;
+}
+
+.p18-photo2 {
+  top: 44%;
+  left: 10%;
   width: 30cqw;
-  font-size: 1.8cqw;
-  /* rotate: -5deg; */
+  rotate: -4deg;
+}
+
+.p18-photo3 {
+  top: 56%;
+  right: 16%;
+  width: 28cqw;
+}
+
+.p18-text2 {
+  top: 70%;
+  right: 12%;
+  width: 40cqw;
+  font-size: 1.9cqw;
 }

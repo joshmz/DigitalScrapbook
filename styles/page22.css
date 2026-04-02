@@ -51,38 +51,29 @@
 }
 
 /* ─── PAGE SPECIFIC POSITIONS ──────────────── */
-.p10-photo1 {
-  top: 8%;
-  left: 9%;
-  width: 37cqw;
-  /* rotate: -5deg; */
-}
-
-.p10-photo2 {
-  top: 32%;
-  left: 9%;
-  width: 38cqw;
-  /* rotate: -5deg; */
-}
-
-.p10-photo3 {
-  top: 50%;
-  right: 18%;
-  width: 34cqw;
-  /* rotate: -3deg; */
-}
-
-.scrap-text.p10-text1 {
-  top: 16%;
-  right: 17%;
-  width: 35cqw;
-  /* rotate: -5deg; */
-  font-size: 1.8cqw;
-}
-
-.p10-text2 {
-  top: 59%;
+.p22-photo1 {
+  top: 10%;
   left: 8%;
+  width: 38cqw;
+}
+
+.p22-text1 {
+  top: 18%;
+  right: 12%;
+  width: 36cqw;
+  font-size: 1.9cqw;
+}
+
+.p22-photo2 {
+  top: 44%;
+  left: 10%;
+  width: 34cqw;
+  rotate: -4deg;
+}
+
+.p22-text2 {
+  top: 64%;
+  right: 12%;
   width: 40cqw;
-  /* rotate: -3deg; */
+  font-size: 1.9cqw;
 }

@@ -52,16 +52,29 @@
 
 /* ─── PAGE SPECIFIC POSITIONS ──────────────── */
 
-.p12-photo1 {
-  top: 50%;
-  left: 10%;
-  width: 70cqw;
-  /* rotate: -90deg; */
+.p24-photo1 {
+  top: 10%;
+  left: 8%;
+  width: 38cqw;
 }
 
-.p12-text1 {
-  top: 7%;
+.p24-text1 {
+  top: 18%;
+  right: 12%;
+  width: 36cqw;
+  font-size: 1.9cqw;
+}
+
+.p24-photo2 {
+  top: 44%;
   left: 10%;
-  width: 60cqw;
-  /* rotate: -90deg; */
+  width: 34cqw;
+  rotate: -4deg;
+}
+
+.p24-text2 {
+  top: 64%;
+  right: 12%;
+  width: 40cqw;
+  font-size: 1.9cqw;
 }

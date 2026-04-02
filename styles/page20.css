@@ -79,3 +79,35 @@
   /* rotate: -5deg; */
   font-size: 1.8cqw;
 }
+.p20-photo1 {
+  top: 10%;
+  left: 8%;
+  width: 38cqw;
+}
+
+.p20-text1 {
+  top: 18%;
+  right: 12%;
+  width: 36cqw;
+  font-size: 1.9cqw;
+}
+
+.p20-photo2 {
+  top: 44%;
+  left: 10%;
+  width: 32cqw;
+  rotate: -4deg;
+}
+
+.p20-photo3 {
+  top: 60%;
+  right: 16%;
+  width: 28cqw;
+}
+
+.p20-text2 {
+  top: 74%;
+  right: 12%;
+  width: 40cqw;
+  font-size: 1.9cqw;
+}
