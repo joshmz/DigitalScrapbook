@@ -52,34 +52,30 @@
 
 /* ─── PAGE SPECIFIC POSITIONS ──────────────── */
 .p18-photo1 {
-  top: 10%;
-  left: 8%;
+  top: 8%;
+  left: 9%;
+  width: 37cqw;
+  /* rotate: -5deg; */
+}
+
+.p18-photo2 {
+  top: 50%;
+  left: 9%;
   width: 38cqw;
+  /* rotate: -5deg; */
+}
+
+.p18-photo3 {
+  top: 50%;
+  right: 18%;
+  width: 34cqw;
+  /* rotate: -3deg; */
 }
 
 .scrap-text.p18-text1 {
   top: 18%;
-  right: 12%;
-  width: 36cqw;
-  font-size: 1.9cqw;
-}
-
-.p18-photo2 {
-  top: 44%;
-  left: 10%;
-  width: 30cqw;
-  rotate: -4deg;
-}
-
-.p18-photo3 {
-  top: 56%;
-  right: 16%;
-  width: 28cqw;
-}
-
-.p18-text2 {
-  top: 70%;
-  right: 12%;
-  width: 40cqw;
-  font-size: 1.9cqw;
+  right: 17%;
+  width: 35cqw;
+  /* rotate: -5deg; */
+  font-size: 1.8cqw;
 }
